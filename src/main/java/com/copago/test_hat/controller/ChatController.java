@@ -1,7 +1,7 @@
 package com.copago.test_hat.controller;
 
 import com.copago.test_hat.dto.ChatMessageDto;
-import com.copago.test_hat.service.ChatMessageService;
+import com.copago.test_hat.service.MessageService;
 import com.copago.test_hat.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ChatController {
-    private final ChatMessageService chatMessageService;
+    private final MessageService messageService;
     private final UserService userService;
 
     // WebSocket 메시지 처리
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessageDto.Request chatMessageDto, Principal principal) {
-        chatMessageService.sendMessage(chatMessageDto, principal.getName());
+        messageService.sendMessage(chatMessageDto, principal.getName());
     }
 
     @MessageMapping("/chat.join/{roomId}")
@@ -45,7 +45,7 @@ public class ChatController {
     public ResponseEntity<ChatMessageDto.Response> sendMessageHttp(
             @Valid @RequestBody ChatMessageDto.Request requestDto,
             @AuthenticationPrincipal UserDetails userDetails) {
-        ChatMessageDto.Response responseDto = chatMessageService.sendMessage(requestDto, userDetails.getUsername());
+        ChatMessageDto.Response responseDto = messageService.sendMessage(requestDto, userDetails.getUsername());
         return ResponseEntity.ok(responseDto);
     }
 
@@ -55,7 +55,7 @@ public class ChatController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal UserDetails userDetails) {
-        List<ChatMessageDto.Response> messages = chatMessageService.getChatRoomMessages(
+        List<ChatMessageDto.Response> messages = messageService.getChatRoomMessages(
                 chatRoomId, userDetails.getUsername(), page, size);
         return ResponseEntity.ok(messages);
     }
@@ -64,7 +64,7 @@ public class ChatController {
     public ResponseEntity<Void> markMessageAsRead(
             @PathVariable Long messageId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        chatMessageService.markMessageAsRead(messageId, userDetails.getUsername());
+        messageService.markMessageAsRead(messageId, userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
 
@@ -72,7 +72,7 @@ public class ChatController {
     public ResponseEntity<Void> markAllMessagesAsRead(
             @PathVariable Long chatRoomId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        chatMessageService.markAllMessagesAsRead(chatRoomId, userDetails.getUsername());
+        messageService.markAllMessagesAsRead(chatRoomId, userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
 }

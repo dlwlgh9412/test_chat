@@ -32,7 +32,7 @@ public class ChatMessageDto {
         private Long id;
         private String content;
         private ChatMessage.MessageType type;
-        private UserDto.Response sender;
+        private Long senderId;
         private Long chatRoomId;
         private LocalDateTime createdAt;
         private long readCount;
@@ -44,7 +44,7 @@ public class ChatMessageDto {
                     .id(message.getId())
                     .content(message.getContent())
                     .type(message.getType())
-                    .sender(UserDto.Response.fromEntity(message.getSender()))
+                    .senderId(message.getSender().getId())
                     .chatRoomId(message.getChatRoom().getId())
                     .createdAt(message.getCreatedAt())
                     .readCount(message.getReadCount())
