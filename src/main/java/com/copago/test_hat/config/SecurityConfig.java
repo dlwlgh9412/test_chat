@@ -82,7 +82,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:8080",  // 개발 서버
+                "http://localhost:63342", // IntelliJ 내장 웹 서버
+                "http://127.0.0.1:5500"   // VS Code Live Server
+                // 필요한 경우 더 추가
+        ));
+        configuration.addAllowedOriginPattern("null");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type"));
         configuration.setExposedHeaders(Arrays.asList("authorization"));
